@@ -14,6 +14,18 @@ if ($javaVersion -notmatch 'version "21') {
 }
 Write-Host "JDK detectado: $javaVersion" -ForegroundColor Green
 
+# mvnw usa JAVA_HOME; el del sistema puede apuntar a otro JDK.
+# Se fija JAVA_HOME al java.home del JDK 21 detectado para las ventanas hijas.
+$prevEap = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+$javaHomeLine = (& java -XshowSettings:properties -version 2>&1 | Select-String 'java.home' | Select-Object -First 1) | Out-String
+$ErrorActionPreference = $prevEap
+if ($javaHomeLine -match 'java.home\s*=\s*(.+)') {
+    $env:JAVA_HOME = $matches[1].Trim()
+    Write-Host "JAVA_HOME fijado a $env:JAVA_HOME" -ForegroundColor Green
+} else {
+    Write-Host "AVISO: no se pudo leer java.home; se usara el JAVA_HOME actual." -ForegroundColor Yellow
+}
+
 $envFile = Join-Path $root ".env"
 if (Test-Path $envFile) {
     Get-Content $envFile | ForEach-Object {

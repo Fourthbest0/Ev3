@@ -1,0 +1,1 @@
+package com.ejemplo.msb.repository;import com.ejemplo.msb.entity.EntityB;import org.springframework.data.jpa.repository.JpaRepository;public interface EntityBRepository extends JpaRepository<EntityB,Long>{ boolean existsByListaConEntityA_EntityAId(Long divisionId);}

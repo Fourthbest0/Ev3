@@ -1,0 +1,3 @@
+package com.ejemplo.msb.client;
+import feign.RequestInterceptor; import feign.RequestTemplate; import org.springframework.context.annotation.Bean; import org.springframework.context.annotation.Configuration; import org.springframework.web.context.request.RequestContextHolder; import org.springframework.web.context.request.ServletRequestAttributes;
+@Configuration public class FeignAuthInterceptor { @Bean RequestInterceptor forwardAuthorization(){return template->{var attrs=(ServletRequestAttributes)RequestContextHolder.getRequestAttributes(); if(attrs!=null){String header=attrs.getRequest().getHeader("Authorization");if(header!=null)template.header("Authorization",header);}};} }

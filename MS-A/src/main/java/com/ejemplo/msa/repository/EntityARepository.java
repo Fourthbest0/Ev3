@@ -1,0 +1,1 @@
+package com.ejemplo.msa.repository; import com.ejemplo.msa.entity.EntityA; import org.springframework.data.jpa.repository.JpaRepository; public interface EntityARepository extends JpaRepository<EntityA,Long>{ boolean existsByNombreAIgnoreCase(String nombreA); }

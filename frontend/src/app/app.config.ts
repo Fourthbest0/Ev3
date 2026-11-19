@@ -26,8 +26,8 @@ export const appConfig: ApplicationConfig = {
       const oauth = inject(OAuthService);
       oauth.configure(authConfig);
       oauth.setupAutomaticSilentRefresh();
-      // Procesa el callback (?code=...) si volvemos del Authorization Server
-      return oauth.tryLoginCodeFlow();
+      // Carga /.well-known/openid-configuration y luego procesa el callback (?code=...)
+      return oauth.loadDiscoveryDocument().then(() => oauth.tryLoginCodeFlow());
     })
   ]
 };

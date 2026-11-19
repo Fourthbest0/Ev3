@@ -7,8 +7,17 @@ export class AuthService {
   constructor(private oauth: OAuthService) {}
 
   /** Inicia el flujo Authorization Code + PKCE contra el auth-server. */
-  login(): void {
-    this.oauth.initCodeFlow();
+  async login(): Promise<void> {
+    try {
+      // initCodeFlow necesita el discovery document cargado; si falló en el
+      // arranque (auth-server caído), se reintenta aquí para ver el error.
+      if (!this.oauth.discoveryDocumentLoaded) {
+        await this.oauth.loadDiscoveryDocument();
+      }
+      this.oauth.initCodeFlow();
+    } catch (e) {
+      throw new Error('No se pudo contactar al Authorization Server. Verifica que auth-server esté ejecutándose en ' + environment.authServerUrl);
+    }
   }
 
   /** Cierra sesión local y en el Authorization Server (OIDC RP-Initiated Logout). */

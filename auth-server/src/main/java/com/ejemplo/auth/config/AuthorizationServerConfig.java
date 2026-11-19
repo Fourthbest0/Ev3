@@ -86,9 +86,11 @@ public class AuthorizationServerConfig {
         http
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/error").permitAll()
+                .requestMatchers("/error", "/login", "/css/**").permitAll()
                 .anyRequest().authenticated())
-            .formLogin(Customizer.withDefaults());
+            .formLogin(form -> form
+                .loginPage("/login")
+                .permitAll());
         return http.build();
     }
 

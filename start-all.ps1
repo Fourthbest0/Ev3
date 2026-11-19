@@ -2,7 +2,10 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # ===== Verificación de JDK 21 (requerido por todos los módulos) =====
-$javaVersion = (& java -version 2>&1 | Select-Object -First 1)
+# java -version escribe en stderr; con Stop eso lanza NativeCommandError
+$prevEap = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+$javaVersion = (& java -version 2>&1 | Select-Object -First 1) | Out-String
+$ErrorActionPreference = $prevEap
 if ($javaVersion -notmatch 'version "21') {
     Write-Host "ERROR: se requiere JDK 21 y el 'java' del PATH reporta:" -ForegroundColor Red
     Write-Host "  $javaVersion" -ForegroundColor Red
